@@ -1,6 +1,6 @@
-# [Project name]
+# Organiza Compras
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+Aplicativo pessoal para registrar compras, acompanhar entregas, organizar cotações e guardar anexos.
 
 ## Run & Operate
 
@@ -22,23 +22,31 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/organiza-compras/src/App.tsx` — login, navegação, cadastro/edição de compras, anexos e exportações
+- `artifacts/organiza-compras/src/index.css` — tema visual da aplicação
+- `artifacts/api-server/src/routes/` — autenticação, compras, anexos, resumo e histórico de exportações
+- `lib/api-spec/openapi.yaml` — contrato único da API
+- `lib/db/src/schema/index.ts` — tabelas e enums do banco
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Valores monetários usam `numeric(12, 2)` no PostgreSQL e são exibidos em reais no aplicativo.
+- A forma de pagamento possui opções controladas e mantém `Não informada` como padrão para registros antigos.
+- Anexos podem ser vinculados a uma compra ou armazenados como cotação avulsa; neste segundo caso, o nome da cotação é obrigatório.
+- O campo interno `recipient` aparece para o usuário como `Solicitante`, preservando compatibilidade com registros já existentes.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+O Organiza Compras centraliza pedidos pessoais, permitindo acompanhar o status de entrega, registrar solicitante, valor total e forma de pagamento, anexar comprovantes e cotações e exportar os dados.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+As telas e mensagens ficam em português do Brasil.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Anexos têm limite de 8 MB e a API valida que todo anexo tenha uma compra ou um nome de cotação.
+- Após alterar `lib/api-spec/openapi.yaml`, execute o codegen antes de validar servidor ou cliente.
 
 ## Pointers
 

@@ -10,6 +10,14 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication operations
+  - name: purchases
+    description: Purchase organization operations
+  - name: exports
+    description: Export history operations
+  - name: attachments
+    description: Purchase attachments
 paths:
   /healthz:
     get:
@@ -24,7 +32,225 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Authenticate the personal workspace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResult"
+        "400":
+          description: Invalid input
+        "401":
+          description: Invalid credentials
+  /purchases:
+    get:
+      operationId: listPurchases
+      tags: [purchases]
+      summary: List organized purchases
+      responses:
+        "200":
+          description: Purchase list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Purchase"
+    post:
+      operationId: createPurchase
+      tags: [purchases]
+      summary: Create a purchase record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PurchaseInput"
+      responses:
+        "201":
+          description: Purchase created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Purchase"
+        "400":
+          description: Invalid purchase
+  /purchases/{id}:
+    patch:
+      operationId: updatePurchase
+      tags: [purchases]
+      summary: Update a purchase record
+      parameters:
+        - $ref: "#/components/parameters/PurchaseId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PurchaseUpdate"
+      responses:
+        "200":
+          description: Purchase updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Purchase"
+        "400":
+          description: Invalid purchase
+        "404":
+          description: Purchase not found
+    delete:
+      operationId: deletePurchase
+      tags: [purchases]
+      summary: Delete a purchase record
+      parameters:
+        - $ref: "#/components/parameters/PurchaseId"
+      responses:
+        "204":
+          description: Purchase deleted
+        "400":
+          description: Invalid purchase id
+        "404":
+          description: Purchase not found
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [purchases]
+      summary: Get purchase overview counts
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+  /exports/history:
+    get:
+      operationId: listExportHistory
+      tags: [exports]
+      summary: List exported documents
+      responses:
+        "200":
+          description: Export history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ExportRecord"
+    post:
+      operationId: createExportRecord
+      tags: [exports]
+      summary: Record a downloaded export
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExportInput"
+      responses:
+        "201":
+          description: Export record created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExportRecord"
+  /attachments:
+    get:
+      operationId: listAttachments
+      tags: [attachments]
+      summary: List purchase attachments
+      responses:
+        "200":
+          description: Attachment list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Attachment"
+    post:
+      operationId: createAttachment
+      tags: [attachments]
+      summary: Store a purchase attachment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AttachmentInput"
+      responses:
+        "201":
+          description: Attachment created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Attachment"
+        "400":
+          description: Invalid attachment
+  /attachments/{id}:
+    delete:
+      operationId: deleteAttachment
+      tags: [attachments]
+      summary: Delete a purchase attachment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+            format: int32
+            minimum: 1
+      responses:
+        "204":
+          description: Attachment deleted
+        "404":
+          description: Attachment not found
+  /attachments/{id}/download:
+    get:
+      operationId: downloadAttachment
+      tags: [attachments]
+      summary: Download a purchase attachment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+            format: int32
+            minimum: 1
+      responses:
+        "200":
+          description: Attachment file
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        "404":
+          description: Attachment not found
 components:
+  parameters:
+    PurchaseId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: number
+        format: int32
+        minimum: 1
   schemas:
     HealthStatus:
       type: object
@@ -33,4 +259,259 @@ components:
           type: string
       required:
         - status
+    LoginInput:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          minLength: 1
+      required: [username, password]
+    LoginResult:
+      type: object
+      properties:
+        authenticated:
+          type: boolean
+        displayName:
+          type: string
+      required: [authenticated, displayName]
+    Purchase:
+      type: object
+      properties:
+        id:
+          type: number
+          format: int32
+        purchaseDate:
+          type: string
+          format: date
+        deliveryDate:
+          type: [string, "null"]
+          format: date
+        supplier:
+          type: string
+        productName:
+          type: string
+        recipient:
+          type: string
+        base:
+          type: string
+        quantity:
+          type: number
+          format: int32
+          minimum: 1
+        totalValue:
+          type: number
+          minimum: 0
+        paymentMethod:
+          type: string
+          enum: [not_informed, pix, credit_card, debit_card, boleto, cash, other]
+        source:
+          type: string
+          enum: [manual]
+        status:
+          type: string
+          enum: [pending, delivered, overdue]
+        deliveredAt:
+          type: [string, "null"]
+        createdAt:
+          type: string
+      required:
+        - id
+        - purchaseDate
+        - deliveryDate
+        - supplier
+        - productName
+        - recipient
+        - base
+        - quantity
+        - totalValue
+        - paymentMethod
+        - source
+        - status
+        - deliveredAt
+        - createdAt
+    PurchaseInput:
+      type: object
+      properties:
+        purchaseDate:
+          type: string
+          format: date
+        deliveryDate:
+          type: [string, "null"]
+          format: date
+        supplier:
+          type: string
+          minLength: 1
+        productName:
+          type: string
+          minLength: 1
+        recipient:
+          type: string
+          minLength: 1
+        base:
+          type: string
+          minLength: 1
+        quantity:
+          type: number
+          format: int32
+          minimum: 1
+        totalValue:
+          type: number
+          minimum: 0
+        paymentMethod:
+          type: string
+          enum: [not_informed, pix, credit_card, debit_card, boleto, cash, other]
+        source:
+          type: string
+          enum: [manual]
+        status:
+          type: string
+          enum: [pending, delivered, overdue]
+      required:
+        - purchaseDate
+        - supplier
+        - productName
+        - recipient
+        - base
+        - quantity
+        - totalValue
+        - paymentMethod
+        - source
+    PurchaseUpdate:
+      type: object
+      properties:
+        purchaseDate:
+          type: string
+          format: date
+        deliveryDate:
+          type: [string, "null"]
+          format: date
+        supplier:
+          type: string
+          minLength: 1
+        productName:
+          type: string
+          minLength: 1
+        recipient:
+          type: string
+          minLength: 1
+        base:
+          type: string
+          minLength: 1
+        quantity:
+          type: number
+          format: int32
+          minimum: 1
+        totalValue:
+          type: number
+          minimum: 0
+        paymentMethod:
+          type: string
+          enum: [not_informed, pix, credit_card, debit_card, boleto, cash, other]
+        source:
+          type: string
+          enum: [manual]
+        status:
+          type: string
+          enum: [pending, delivered, overdue]
+    Attachment:
+      type: object
+      properties:
+        id:
+          type: number
+          format: int32
+        purchaseId:
+          type: [number, "null"]
+          format: int32
+        quotationName:
+          type: [string, "null"]
+        purchaseName:
+          type: string
+        fileName:
+          type: string
+        mimeType:
+          type: string
+        fileSize:
+          type: number
+          format: int32
+        createdAt:
+          type: string
+        downloadUrl:
+          type: string
+      required: [id, purchaseId, quotationName, purchaseName, fileName, mimeType, fileSize, createdAt, downloadUrl]
+    AttachmentInput:
+      type: object
+      properties:
+        purchaseId:
+          type: [number, "null"]
+          format: int32
+          minimum: 1
+        quotationName:
+          type: [string, "null"]
+          minLength: 1
+        fileName:
+          type: string
+          minLength: 1
+        mimeType:
+          type: string
+          minLength: 1
+        fileSize:
+          type: number
+          format: int32
+          minimum: 1
+        data:
+          type: string
+          minLength: 1
+      required: [fileName, mimeType, fileSize, data]
+    DashboardSummary:
+      type: object
+      properties:
+        total:
+          type: number
+          format: int32
+        pending:
+          type: number
+          format: int32
+        delivered:
+          type: number
+          format: int32
+        overdue:
+          type: number
+          format: int32
+        thisMonth:
+          type: number
+          format: int32
+        recent:
+          type: array
+          items:
+            $ref: "#/components/schemas/Purchase"
+      required: [total, pending, delivered, overdue, thisMonth, recent]
+    ExportInput:
+      type: object
+      properties:
+        format:
+          type: string
+          enum: [xlsx, csv, ods]
+        rowCount:
+          type: number
+          format: int32
+          minimum: 0
+      required: [format, rowCount]
+    ExportRecord:
+      type: object
+      properties:
+        id:
+          type: number
+          format: int32
+        format:
+          type: string
+          enum: [xlsx, csv, ods]
+        rowCount:
+          type: number
+          format: int32
+        createdAt:
+          type: string
+      required: [id, format, rowCount, createdAt]
 

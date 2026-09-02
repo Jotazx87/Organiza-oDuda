@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Organiza Compras"
+description = "Aplicativo pessoal para registrar compras, acompanhar entregas, organizar cotações e guardar anexos com clareza."
+version = "1.0.0"
+id = "artifacts/organiza-compras"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22153
+
+[services.development]
+run = "pnpm --filter @workspace/organiza-compras run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/organiza-compras", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/organiza-compras/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22153"
+BASE_PATH = "/"
