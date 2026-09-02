@@ -19,6 +19,7 @@ function toAttachment(
     id: row.id,
     purchaseId: row.purchaseId,
     quotationName: row.quotationName,
+    attachmentName: row.attachmentName,
     purchaseName: row.purchaseName ?? row.quotationName ?? "Cotação avulsa",
     fileName: row.fileName,
     mimeType: row.mimeType,
@@ -35,6 +36,7 @@ router.get("/attachments", async (_req, res, next) => {
         id: attachmentsTable.id,
         purchaseId: attachmentsTable.purchaseId,
         quotationName: attachmentsTable.quotationName,
+        attachmentName: attachmentsTable.attachmentName,
         fileName: attachmentsTable.fileName,
         mimeType: attachmentsTable.mimeType,
         fileSize: attachmentsTable.fileSize,
@@ -59,6 +61,7 @@ router.post("/attachments", async (req, res, next) => {
       return;
     }
     const quotationName = parsed.data.quotationName?.trim() || null;
+    const attachmentName = parsed.data.attachmentName?.trim() || null;
     if (!parsed.data.purchaseId && !quotationName) {
       res.status(400).json({ error: "Informe o nome da cotação para um anexo sem compra vinculada." });
       return;
@@ -85,6 +88,7 @@ router.post("/attachments", async (req, res, next) => {
         data: parsed.data.data,
         purchaseId: parsed.data.purchaseId ?? null,
         quotationName: parsed.data.purchaseId ? null : quotationName,
+        attachmentName,
       })
       .returning();
     res.status(201).json(CreateAttachmentResponse.parse(toAttachment({ ...row, purchaseName })));

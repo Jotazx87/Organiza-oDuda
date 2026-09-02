@@ -17,6 +17,11 @@ export interface AttachmentInput {
      * @nullable
      */
   quotationName?: string | null;
+  /**
+     * @minLength 1
+     * @nullable
+     */
+  attachmentName?: string | null;
   /** @minLength 1 */
   fileName: string;
   /** @minLength 1 */

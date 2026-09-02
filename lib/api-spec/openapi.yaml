@@ -427,6 +427,9 @@ components:
           format: int32
         quotationName:
           type: [string, "null"]
+        attachmentName:
+          type: [string, "null"]
+          minLength: 1
         purchaseName:
           type: string
         fileName:
@@ -440,7 +443,7 @@ components:
           type: string
         downloadUrl:
           type: string
-      required: [id, purchaseId, quotationName, purchaseName, fileName, mimeType, fileSize, createdAt, downloadUrl]
+      required: [id, purchaseId, quotationName, attachmentName, purchaseName, fileName, mimeType, fileSize, createdAt, downloadUrl]
     AttachmentInput:
       type: object
       properties:
@@ -449,6 +452,9 @@ components:
           format: int32
           minimum: 1
         quotationName:
+          type: [string, "null"]
+          minLength: 1
+        attachmentName:
           type: [string, "null"]
           minLength: 1
         fileName:

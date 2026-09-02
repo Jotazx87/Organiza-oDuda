@@ -248,10 +248,14 @@ export const CreateExportRecordResponse = zod.object({
 /**
  * @summary List purchase attachments
  */
+
+
+
 export const ListAttachmentsResponseItem = zod.object({
   "id": zod.number(),
   "purchaseId": zod.number().nullable(),
   "quotationName": zod.string().nullable(),
+  "attachmentName": zod.string().min(1).nullable(),
   "purchaseName": zod.string(),
   "fileName": zod.string(),
   "mimeType": zod.string(),
@@ -273,19 +277,25 @@ export const ListAttachmentsResponse = zod.array(ListAttachmentsResponseItem)
 
 
 
+
 export const CreateAttachmentBody = zod.object({
   "purchaseId": zod.number().min(1).nullish(),
   "quotationName": zod.string().min(1).nullish(),
+  "attachmentName": zod.string().min(1).nullish(),
   "fileName": zod.string().min(1),
   "mimeType": zod.string().min(1),
   "fileSize": zod.number().min(1),
   "data": zod.string().min(1)
 })
 
+
+
+
 export const CreateAttachmentResponse = zod.object({
   "id": zod.number(),
   "purchaseId": zod.number().nullable(),
   "quotationName": zod.string().nullable(),
+  "attachmentName": zod.string().min(1).nullable(),
   "purchaseName": zod.string(),
   "fileName": zod.string(),
   "mimeType": zod.string(),

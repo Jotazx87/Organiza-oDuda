@@ -66,6 +66,7 @@ export const attachmentsTable = pgTable("attachments", {
   purchaseId: integer("purchase_id")
     .references(() => purchasesTable.id, { onDelete: "cascade" }),
   quotationName: varchar("quotation_name", { length: 200 }),
+  attachmentName: varchar("attachment_name", { length: 200 }),
   fileName: varchar("file_name", { length: 255 }).notNull(),
   mimeType: varchar("mime_type", { length: 120 }).notNull(),
   fileSize: integer("file_size").notNull(),
