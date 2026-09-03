@@ -31,13 +31,12 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", router);
 import path from "path";
+import { fileURLToPath } from "url";
 
-// Se houver uma pasta de build do front-end, serve ela na raiz
-const staticPath = path.resolve(__dirname, "../../client/dist"); // (ou o caminho onde fica o build do front no seu projeto)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Serve os arquivos estáticos do front-end compilado
+const staticPath = path.resolve(__dirname, "../public"); // ou o caminho exato do build
 app.use(express.static(staticPath));
-
-app.get("*", (req, res) => {
-  res.sendFile(path.join(staticPath, "index.html"));
-});
-
 export default app;
