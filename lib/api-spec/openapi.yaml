@@ -32,7 +32,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
-    /auth/login:
+    /api/auth/login:
     post:
       operationId: login
       tags: [auth]
