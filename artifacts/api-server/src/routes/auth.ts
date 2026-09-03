@@ -3,7 +3,7 @@ import { LoginBody, LoginResponse } from "@workspace/api-zod";
 
 const router: IRouter = Router();
 
-router.post("/auth/login", (req, res) => {
+router.post("/login", (req, res) => {
   const parsed = LoginBody.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: "Preencha usuário e senha." });
