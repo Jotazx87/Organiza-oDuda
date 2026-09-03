@@ -30,13 +30,10 @@ app.use(express.json({ limit: "12mb" }));
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", router);
-import path from "path";
-import { fileURLToPath } from "url";
+const staticPath = path.resolve(__dirname, "../../../client/dist");
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Serve os arquivos estáticos do front-end compilado
-const staticPath = path.resolve(__dirname, "../public"); // ou o caminho exato do build
 app.use(express.static(staticPath));
-export default app;
+
+app.get(/^(?!\/api).*/, (_req, res) => {
+  res.sendFile(path.join(staticPath, "index.html"));
+});
