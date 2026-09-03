@@ -30,5 +30,14 @@ app.use(express.json({ limit: "12mb" }));
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", router);
+import path from "path";
+
+// Se houver uma pasta de build do front-end, serve ela na raiz
+const staticPath = path.resolve(__dirname, "../../client/dist"); // (ou o caminho onde fica o build do front no seu projeto)
+app.use(express.static(staticPath));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(staticPath, "index.html"));
+});
 
 export default app;
