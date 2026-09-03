@@ -1,8 +1,14 @@
-import express, { type Express } from "express";
+import express, { type Express, type Request, type Response } from "express";
 import cors from "cors";
 import pinoHttp from "pino-http";
-import router from "./routes";
+import path from "path";
+import { fileURLToPath } from "url";
 import { logger } from "./lib/logger";
+import { router } from "./router";
+
+// Cria as variáveis equivalentes ao __dirname para ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app: Express = express();
 
