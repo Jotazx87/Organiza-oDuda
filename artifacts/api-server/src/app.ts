@@ -32,3 +32,5 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api", router);
 
 export default app;
+
+console.log("ROTAS REGISTRADAS:", app._router.stack.filter((r: any) => r.route).map((r: any) => r.route.path));
