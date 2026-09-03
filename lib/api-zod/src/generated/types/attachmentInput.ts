@@ -22,6 +22,8 @@ export interface AttachmentInput {
      * @nullable
      */
   attachmentName?: string | null;
+  /** @nullable */
+  attachmentDate: Date | null;
   /** @minLength 1 */
   fileName: string;
   /** @minLength 1 */

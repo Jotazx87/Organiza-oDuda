@@ -20,6 +20,7 @@ function toAttachment(
     purchaseId: row.purchaseId,
     quotationName: row.quotationName,
     attachmentName: row.attachmentName,
+    attachmentDate: row.attachmentDate,
     purchaseName: row.purchaseName ?? row.quotationName ?? "Cotação avulsa",
     fileName: row.fileName,
     mimeType: row.mimeType,
@@ -37,6 +38,7 @@ router.get("/attachments", async (_req, res, next) => {
         purchaseId: attachmentsTable.purchaseId,
         quotationName: attachmentsTable.quotationName,
         attachmentName: attachmentsTable.attachmentName,
+        attachmentDate: attachmentsTable.attachmentDate,
         fileName: attachmentsTable.fileName,
         mimeType: attachmentsTable.mimeType,
         fileSize: attachmentsTable.fileSize,
@@ -89,6 +91,9 @@ router.post("/attachments", async (req, res, next) => {
         purchaseId: parsed.data.purchaseId ?? null,
         quotationName: parsed.data.purchaseId ? null : quotationName,
         attachmentName,
+        attachmentDate: parsed.data.attachmentDate
+          ? parsed.data.attachmentDate.toISOString().slice(0, 10)
+          : null,
       })
       .returning();
     res.status(201).json(CreateAttachmentResponse.parse(toAttachment({ ...row, purchaseName })));

@@ -430,6 +430,9 @@ components:
         attachmentName:
           type: [string, "null"]
           minLength: 1
+        attachmentDate:
+          type: [string, "null"]
+          format: date
         purchaseName:
           type: string
         fileName:
@@ -443,7 +446,7 @@ components:
           type: string
         downloadUrl:
           type: string
-      required: [id, purchaseId, quotationName, attachmentName, purchaseName, fileName, mimeType, fileSize, createdAt, downloadUrl]
+      required: [id, purchaseId, quotationName, attachmentName, attachmentDate, purchaseName, fileName, mimeType, fileSize, createdAt, downloadUrl]
     AttachmentInput:
       type: object
       properties:
@@ -457,6 +460,9 @@ components:
         attachmentName:
           type: [string, "null"]
           minLength: 1
+        attachmentDate:
+          type: [string, "null"]
+          format: date
         fileName:
           type: string
           minLength: 1
@@ -470,7 +476,7 @@ components:
         data:
           type: string
           minLength: 1
-      required: [fileName, mimeType, fileSize, data]
+      required: [attachmentDate, fileName, mimeType, fileSize, data]
     DashboardSummary:
       type: object
       properties:

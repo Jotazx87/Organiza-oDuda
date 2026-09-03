@@ -17,6 +17,8 @@ export interface Attachment {
      * @nullable
      */
   attachmentName: string | null;
+  /** @nullable */
+  attachmentDate: Date | null;
   purchaseName: string;
   fileName: string;
   mimeType: string;

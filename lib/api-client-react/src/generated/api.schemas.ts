@@ -182,6 +182,8 @@ export interface Attachment {
      * @nullable
      */
   attachmentName: string | null;
+  /** @nullable */
+  attachmentDate: string | null;
   purchaseName: string;
   fileName: string;
   mimeType: string;
@@ -206,6 +208,8 @@ export interface AttachmentInput {
      * @nullable
      */
   attachmentName?: string | null;
+  /** @nullable */
+  attachmentDate: string | null;
   /** @minLength 1 */
   fileName: string;
   /** @minLength 1 */
